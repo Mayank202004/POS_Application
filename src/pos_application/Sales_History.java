@@ -5,6 +5,7 @@
 package pos_application;
 
 import Dependency.db;
+import static Dependency.db.mycon;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,10 +14,8 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.view.JasperViewer;
 
 /**
@@ -50,6 +49,28 @@ public class Sales_History extends javax.swing.JPanel {
         catch(SQLException e){
             System.out.println(e);}
     }
+    
+    //function to preview sales history receipt
+    public void previewPDFReport(String orderDate, int orderId) {
+    try {
+        // Load compiled JasperReports template
+        String reportPath = "C:\\Users\\mayan\\Documents\\NetBeansProjects\\POS_Application\\src\\Dependency\\reprint.jasper";
+
+        // Create parameters map
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("order_date", orderDate);
+        parameters.put("order_id", orderId);
+
+        // Fill the report with data (No need to specify data source)
+        JasperPrint jasperPrint = JasperFillManager.fillReport(reportPath, parameters,mycon());
+
+        // Preview the report
+        JasperViewer.viewReport(jasperPrint, false);
+    } catch (JRException e) {
+        System.out.println(e);
+    }}
+
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -171,7 +192,7 @@ public class Sales_History extends javax.swing.JPanel {
                                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton1)))
-                        .addGap(0, 318, Short.MAX_VALUE)))
+                        .addGap(0, 250, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -240,24 +261,7 @@ public class Sales_History extends javax.swing.JPanel {
         if (row != -1) { // Ensure a row is selected
             int order_id = Integer.parseInt(jTable1.getValueAt(row, 0).toString());
             String order_date = jTable1.getValueAt(row, 1).toString();
-            
-        try {
-            JasperReport jasperReport = JasperCompileManager.compileReport("/Dependency/reprint.jrxml");
-            // Create a parameter map
-            Map<String, Object> parameters = new HashMap<>();
-            parameters.put("order_id", order_id);
-            parameters.put("order_date", order_date);
-
-            // Fill the JasperReport with data (connection and query are already defined in the report template)
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters);
-
-            // Display the report in a viewer
-            JasperViewer.viewReport(jasperPrint, false);
-
-        } catch (JRException e) {
-            e.printStackTrace();
-        }
-            
+            previewPDFReport(order_date,order_id);   
         }
     }//GEN-LAST:event_jTable1MouseClicked
 

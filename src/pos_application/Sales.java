@@ -141,14 +141,18 @@ private void saveSales(){
             customerName = customerName.isEmpty() ? null : customerName;
             String formattedDate = currentDateTime.format(dateFormatter);
             String formattedTime = currentDateTime.format(timeFormatter);
-
             // Inserting overall order info into orders table
             s.executeUpdate("INSERT INTO orders (order_id, order_date, order_time, customer_id, customer_name, total_amount, payment_method, discounts) VALUES (" + orderID + ", '" + formattedDate + "', '" + formattedTime + "', " + customerID + ", '" + customerName + "', " + totalamount + ", null, " + totaldiscount + ");");
 
-            
+            System.out.println("Length of formattedDate: " + formattedDate.length());
             //inserting all items detail to order_items table
             for (int i = 0; i < model.getRowCount(); i++){     
-                s.executeUpdate("INSERT INTO order_items (order_id, product_name, barcode, quantity, mrp, sp, discount, total) VALUES ("+orderID+", '" + model.getValueAt(i, 0).toString() + "', '" + model.getValueAt(i, 1).toString() + "', "+Integer.valueOf(model.getValueAt(i, 4).toString())+", '" + Double.valueOf(model.getValueAt(i, 3).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 2).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 5).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 6).toString()) + "');");
+                s.executeUpdate("INSERT INTO order_items (order_id,order_date, product_name, barcode, quantity, mrp, sp, discount, total) VALUES (" + orderID + ",'" + formattedDate + "', '" + model.getValueAt(i, 0).toString() + "', '" + model.getValueAt(i, 1).toString() + "', "+Integer.valueOf(model.getValueAt(i, 4).toString())+", '" + Double.valueOf(model.getValueAt(i, 3).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 2).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 5).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 6).toString()) + "');");
+                
+                // Decrementing quantity of purchased items...
+                String productName = model.getValueAt(i, 0).toString();
+                int quantity = Integer.parseInt(model.getValueAt(i, 4).toString());
+                s.executeUpdate("UPDATE products SET Quantity = Quantity - " + quantity + " WHERE product_name = '" + productName + "';");
             }
             Home.setminireport();
             

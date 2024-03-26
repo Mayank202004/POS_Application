@@ -3,11 +3,9 @@
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="351"/>
+        <parameter name="date" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT *
-FROM orders o
-INNER JOIN order_items oi ON o.order_id = oi.order_id
-WHERE o.order_id = (SELECT MAX(order_id) FROM orders);
+		    <![CDATA[SELECT * FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id WHERE o.order_id = (SELECT MAX(order_id) FROM orders WHERE order_date = $P{date});
 ]]>
 	</queryString>
 	<field name="order_id" class="java.lang.Integer">
