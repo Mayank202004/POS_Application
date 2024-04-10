@@ -32,7 +32,7 @@ public class report extends javax.swing.JPanel {
     // Assuming 'db' is an instance of your database handler class
     try {
         Statement s = db.mycon().createStatement();
-        ResultSet rs = s.executeQuery("SELECT order_date, SUM(total_amount) AS total_amount FROM orders GROUP BY order_date ORDER BY STR_TO_DATE(order_date, '%d/%m/%Y') LIMIT 5;");
+        ResultSet rs = s.executeQuery("SELECT * FROM (SELECT order_date, SUM(total_amount) AS total_amount FROM orders GROUP BY order_date ORDER BY STR_TO_DATE(order_date, '%d/%m/%Y') DESC LIMIT 5 )AS subquery ORDER BY STR_TO_DATE(order_date, '%d/%m/%Y') ASC;");
 
         while (rs.next()) {
             String date = rs.getString("order_date");
@@ -110,21 +110,48 @@ public class report extends javax.swing.JPanel {
     //Monthly bar chart
     public void monthlyBarChart(){
     DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+    
+    // Mapping of month numbers to month names
+    String[][] monthNames = {
+        {"1", "January"},
+        {"2", "February"},
+        {"3", "March"},
+        {"4", "April"},
+        {"5", "May"},
+        {"6", "June"},
+        {"7", "July"},
+        {"8", "August"},
+        {"9", "September"},
+        {"10", "October"},
+        {"11", "November"},
+        {"12", "December"}
+    };
+    
     try {
         Statement s = db.mycon().createStatement();
         ResultSet rs = s.executeQuery("SELECT "
-        +"IF(MONTH(MIN(STR_TO_DATE(order_date, '%d/%m/%Y'))) = MONTH(MAX(STR_TO_DATE(order_date, '%d/%m/%Y'))),"
-        +"CONCAT(MONTHNAME(MIN(STR_TO_DATE(order_date, '%d/%m/%Y')))),"
-        +"CONCAT(MONTHNAME(MIN(STR_TO_DATE(order_date, '%d/%m/%Y'))),' - ',MONTHNAME(MAX(STR_TO_DATE(order_date, '%d/%m/%Y'))))) AS Month,"
-        +"SUM(total_amount) AS Total_Amount "
-        +"FROM orders WHERE STR_TO_DATE(order_date, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 4 WEEK)"
-        +"GROUP BY CONCAT(YEAR(STR_TO_DATE(order_date, '%d/%m/%Y')), '-', MONTH(STR_TO_DATE(order_date, '%d/%m/%Y'))) "
-        +"ORDER BY Month;");
+            + "MONTH(STR_TO_DATE(order_date, '%d/%m/%Y')) AS Month,"
+            + "SUM(total_amount) AS Total_Amount "
+            + "FROM orders "
+            + "WHERE STR_TO_DATE(order_date, '%d/%m/%Y') >= DATE_SUB(CURDATE(), INTERVAL 5 MONTH) "
+            + "GROUP BY Month "
+            + "ORDER BY Month;");
 
         while (rs.next()) {
-            String month = rs.getString("Month");
-            double totalAmount = rs.getDouble("total_amount");
-            dataset.setValue(totalAmount, "Total_Amount", month);
+            int monthNumber = rs.getInt("Month");
+            double totalAmount = rs.getDouble("Total_Amount");
+            
+            // Get month name from the monthNames array
+            String monthName = "";
+            for (String[] month : monthNames) {
+                if (Integer.parseInt(month[0]) == monthNumber) {
+                    monthName = month[1];
+                    break;
+                }
+            }
+            
+            // Add data to dataset
+            dataset.setValue(totalAmount, "Total_Amount", monthName);
         }
 
         JFreeChart chart = ChartFactory.createBarChart(

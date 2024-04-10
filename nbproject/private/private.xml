@@ -4,14 +4,15 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Sales.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/showReports.java</file>
             <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Home.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Supplier.java</file>
             <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/pendingCheque.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/Dependency/report2.jrxml</file>
             <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Customer.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/NewSupplier.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Sales_History.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/Dependency/reprint.jrxml</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/returnProduct.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/report.java</file>
             <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Purchase.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/Dependency/report1.jrxml</file>
         </group>
     </open-files>
 </project-private>

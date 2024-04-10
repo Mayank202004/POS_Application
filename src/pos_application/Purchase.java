@@ -805,7 +805,7 @@ protected void setSupplierDetails(String id,String name,String mobile){
 
         jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel17.setText("CHEQUE DATE (IF APPLICABLE)");
+        jLabel17.setText("CHEQUE DATE (dd-mm-yyyy)");
 
         javax.swing.GroupLayout jPanel26Layout = new javax.swing.GroupLayout(jPanel26);
         jPanel26.setLayout(jPanel26Layout);

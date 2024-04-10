@@ -68,7 +68,7 @@ public class Home extends javax.swing.JFrame {
             calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY); // Set the day to Sunday (start of the week)
             String weeklyStartDate = new SimpleDateFormat("dd/MM/yyyy").format(calendar.getTime());
 
-            ResultSet weeklyResult = s.executeQuery("SELECT IFNULL(SUM(total_amount), 0) AS weeklyTotal FROM orders WHERE order_date BETWEEN '" + weeklyStartDate + "' AND '" + todayDate + "'");
+            ResultSet weeklyResult = s.executeQuery("SELECT IFNULL(SUM(total_amount), 0) AS weeklyTotal FROM orders WHERE STR_TO_DATE(order_date, '%d/%m/%Y') BETWEEN STR_TO_DATE('" + weeklyStartDate + "', '%d/%m/%Y') AND STR_TO_DATE('" + todayDate + "', '%d/%m/%Y')");
             if (weeklyResult.next()) {
                 jLabel10.setText(weeklyResult.getString("weeklyTotal"));
             }           
@@ -591,15 +591,22 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        showReports rs = new showReports();
+        jpload.jPanelLoader(jPanel3,rs);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
+        //Return Products
+        returnProduct ReturnFrame = new returnProduct();
+        ReturnFrame.setLocationRelativeTo(null);
+        ReturnFrame.setVisible(true);
+        ReturnFrame.setExtendedState(Sales.MAXIMIZED_BOTH);
+        ReturnFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+        restockStatus rs = new restockStatus();
+        jpload.jPanelLoader(jPanel3,rs);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed

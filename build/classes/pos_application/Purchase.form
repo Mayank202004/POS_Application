@@ -1043,7 +1043,7 @@
               <Font name="Segoe UI" size="12" style="1"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="CHEQUE DATE (IF APPLICABLE)"/>
+            <Property name="text" type="java.lang.String" value="CHEQUE DATE (dd-mm-yyyy)"/>
           </Properties>
         </Component>
       </SubComponents>
