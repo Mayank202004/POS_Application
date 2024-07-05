@@ -27,6 +27,7 @@ public class Home extends javax.swing.JFrame {
         initComponents();
         listMenu1.setOpaque(false);
         init();
+        homeImage();
         setdata();
         setminireport();
         this.setExtendedState(Home.MAXIMIZED_BOTH);
@@ -97,6 +98,11 @@ public class Home extends javax.swing.JFrame {
             g2d.fillRect(0, 0, width, height);
         }
     }
+    
+    public static void homeImage() {
+        homeImage hi = new homeImage();
+        jpload.jPanelLoader(jPanel3,hi);
+    }
     public static void customers() {
         Customer cus = new Customer();
         jpload.jPanelLoader(jPanel3,cus);
@@ -166,21 +172,22 @@ public class Home extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel3.setBackground(new java.awt.Color(217, 227, 241));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1092, Short.MAX_VALUE)
+            .addGap(0, 1100, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel2.setBackground(new java.awt.Color(217, 227, 241));
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jButton1.setText("Sale (POS) F1");
@@ -290,6 +297,8 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(listMenu1, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)
                 .addContainerGap())
         );
+
+        jPanel4.setBackground(new java.awt.Color(217, 227, 241));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel1.setText("26 February");
@@ -587,7 +596,9 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        //To open customer analysis on click 
+        customerAnalysis ca = new customerAnalysis();
+        jpload.jPanelLoader(jPanel3,ca);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed

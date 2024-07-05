@@ -4,11 +4,13 @@
  */
 package pos_application;
 import Dependency.db;
+import java.awt.Color;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.util.Vector;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -27,7 +29,7 @@ public class Customer extends javax.swing.JPanel {
     public void tb_load(){
         //To load mysql table to jTable
         try{
-            DefaultTableModel dt = (DefaultTableModel) jTable1.getModel();
+            DefaultTableModel dt = (DefaultTableModel) rSTableMetro1.getModel();
             dt.setRowCount(0);
             Statement s = db.mycon().createStatement();
             ResultSet rs = s.executeQuery("select * from customers");
@@ -59,13 +61,15 @@ public class Customer extends javax.swing.JPanel {
         jButton4 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         searchbytextfield2 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        rSTableMetro1 = new rojerusan.RSTableMetro();
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        setBackground(new java.awt.Color(217, 227, 241));
+
+        jPanel1.setBackground(new java.awt.Color(217, 227, 241));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Name");
@@ -173,24 +177,6 @@ public class Customer extends javax.swing.JPanel {
                 .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "ID", "Customer Name", "Contact"
-            }
-        ));
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
         searchbytextfield2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchbytextfield2ActionPerformed(evt);
@@ -207,6 +193,34 @@ public class Customer extends javax.swing.JPanel {
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name", "Customer ID", "Contact" }));
 
+        rSTableMetro1.setBackground(new java.awt.Color(217, 227, 241));
+        rSTableMetro1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "ID", "Name", "Contact"
+            }
+        ));
+        rSTableMetro1.setAltoHead(20);
+        rSTableMetro1.setColorBordeFilas(new java.awt.Color(255, 255, 255));
+        rSTableMetro1.setColorBordeHead(new java.awt.Color(0, 112, 192));
+        rSTableMetro1.setColorFilasBackgound1(new java.awt.Color(217, 227, 241));
+        rSTableMetro1.setColorFilasBackgound2(new java.awt.Color(217, 227, 241));
+        rSTableMetro1.setColorFilasForeground1(new java.awt.Color(0, 0, 0));
+        rSTableMetro1.setColorFilasForeground2(new java.awt.Color(0, 0, 0));
+        rSTableMetro1.setFuenteFilas(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        rSTableMetro1.setGridColor(new java.awt.Color(217, 227, 241));
+        rSTableMetro1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                rSTableMetro1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(rSTableMetro1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -221,26 +235,28 @@ public class Customer extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(24, 24, 24)
-                        .addComponent(searchbytextfield2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(searchbytextfield2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(searchbytextfield2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel4)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(80, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(114, 114, 114)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(114, 114, 114)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(searchbytextfield2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel4)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 487, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -316,17 +332,6 @@ public class Customer extends javax.swing.JPanel {
 }
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        //mouse click to get data 
-        int r=jTable1.getSelectedRow();
-        String id=jTable1.getValueAt (r,0).toString();
-        String name=jTable1.getValueAt (r,1).toString();
-        String tp=jTable1.getValueAt (r,2).toString();
-        jTextField1.setText(name);
-        jTextField2.setText(tp);
-        jTextField3.setText(id);
-    }//GEN-LAST:event_jTable1MouseClicked
-
     private void searchbytextfield2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchbytextfield2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchbytextfield2ActionPerformed
@@ -344,7 +349,7 @@ public class Customer extends javax.swing.JPanel {
       };
 
       try {
-        DefaultTableModel dt = (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel dt = (DefaultTableModel) rSTableMetro1.getModel();
         dt.setRowCount(0);
         Statement s = db.mycon().createStatement();
 
@@ -363,6 +368,17 @@ public class Customer extends javax.swing.JPanel {
       }
     }//GEN-LAST:event_searchbytextfield2KeyReleased
 
+    private void rSTableMetro1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_rSTableMetro1MouseClicked
+        //mouse click to get data 
+        int r=rSTableMetro1.getSelectedRow();
+        String id=rSTableMetro1.getValueAt (r,0).toString();
+        String name=rSTableMetro1.getValueAt (r,1).toString();
+        String tp=rSTableMetro1.getValueAt (r,2).toString();
+        jTextField1.setText(name);
+        jTextField2.setText(tp);
+        jTextField3.setText(id);
+    }//GEN-LAST:event_rSTableMetro1MouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -376,10 +392,10 @@ public class Customer extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private rojerusan.RSTableMetro rSTableMetro1;
     private javax.swing.JTextField searchbytextfield2;
     // End of variables declaration//GEN-END:variables
 }

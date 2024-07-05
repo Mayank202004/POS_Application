@@ -31,6 +31,7 @@ public class ListMenu<E extends Object> extends JList<E> {
                         if (menu.getType() == Model_Menu.MenuType.MENU) {
                             selectedIndex = index;
                             switch (index) {
+                                case 0 -> Home.homeImage();
                                 case 2 -> Home.customers();
                                 case 4 -> Home.suppliers();
                                 case 6 -> Home.productmanager();

@@ -15,13 +15,16 @@
 	</style>
 	<queryString language="SQL">
 		<![CDATA[SELECT 
-    ROW_NUMBER() OVER (ORDER BY order_date) AS serial_number,
+    ROW_NUMBER() OVER (ORDER BY CAST(order_date AS DATE)) AS serial_number,
     order_date,
     SUM(total_amount) AS total_amount_per_day
 FROM 
     orders
 GROUP BY 
-    order_date;]]>
+    order_date
+ORDER BY
+    CAST(order_date AS DATE);
+]]>
 	</queryString>
 	<field name="serial_number" class="java.math.BigInteger"/>
 	<field name="order_date" class="java.lang.String">

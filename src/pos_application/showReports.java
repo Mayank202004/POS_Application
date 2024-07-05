@@ -36,6 +36,8 @@ public class showReports extends javax.swing.JPanel {
         rSMaterialButtonRectangle1 = new rojerusan.RSMaterialButtonRectangle();
         rSMaterialButtonRectangle2 = new rojerusan.RSMaterialButtonRectangle();
 
+        setBackground(new java.awt.Color(217, 227, 241));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("View & Print Reports");
 

@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
+import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -28,7 +29,7 @@ public class pendingCheque extends javax.swing.JPanel {
     }
     
     
-    public void tb_load() {
+    private void tb_load() {
     // To load MySQL table to jTable
     try {
         DefaultTableModel dt = (DefaultTableModel) jTable1.getModel();
@@ -42,13 +43,22 @@ public class pendingCheque extends javax.swing.JPanel {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String todayString = dateFormat.format(today);
         
-        ResultSet rs = s.executeQuery("SELECT supplier_id, supplier_name, cheque_date, total_amount FROM purchases WHERE payment_method = 'Cheque' AND STR_TO_DATE(cheque_date, '%d-%m-%Y') >= STR_TO_DATE('" + todayString + "', '%d-%m-%Y')");
+        String query = "SELECT supplier_id, supplier_name, cheque_date, total_amount, payment_status,cheque_number FROM purchases WHERE payment_method = 'Cheque' AND STR_TO_DATE(cheque_date, '%d-%m-%Y') >= STR_TO_DATE('" + todayString + "', '%d-%m-%Y')";
+        
+        // Check if the checkbox is selected
+        if (jCheckBox1.isSelected()) {
+            query += " AND payment_status = 'Unpaid'";
+        }
+
+        ResultSet rs = s.executeQuery(query);
         while (rs.next()) {
             Vector v = new Vector();
             v.add(rs.getString("supplier_id"));
             v.add(rs.getString("supplier_name"));
             v.add(rs.getString("cheque_date"));
             v.add(rs.getString("total_amount"));
+            v.add(rs.getString("payment_status"));
+            v.add(rs.getString("cheque_number"));
             dt.addRow(v);
         }
     } catch (SQLException e) {
@@ -66,28 +76,18 @@ public class pendingCheque extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         searchbytextfield2 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new rojerusan.RSTableMetro();
+        jCheckBox1 = new javax.swing.JCheckBox();
+
+        setBackground(new java.awt.Color(217, 227, 241));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Pending Cheques");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Supplier ID", "Payee (Supplier Name)", "Date", "Total Amount"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Search By:");
@@ -112,30 +112,65 @@ public class pendingCheque extends javax.swing.JPanel {
             }
         });
 
+        jTable1.setBackground(new java.awt.Color(217, 227, 241));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Supplier ID", "Payee (Supplier Name)", "Date", "Total Amount", "Status", "Cheque Number"
+            }
+        ));
+        jTable1.setAltoHead(20);
+        jTable1.setColorBordeFilas(new java.awt.Color(255, 255, 255));
+        jTable1.setColorBordeHead(new java.awt.Color(0, 112, 192));
+        jTable1.setColorFilasBackgound1(new java.awt.Color(217, 227, 241));
+        jTable1.setColorFilasBackgound2(new java.awt.Color(217, 227, 241));
+        jTable1.setColorFilasForeground1(new java.awt.Color(0, 0, 0));
+        jTable1.setColorFilasForeground2(new java.awt.Color(0, 0, 0));
+        jTable1.setFuenteFilas(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jTable1.setGridColor(new java.awt.Color(217, 227, 241));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTable1);
+
+        jCheckBox1.setText("Show Only Unpresented Cheques");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(423, 423, 423)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(27, 27, 27)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(24, 24, 24)
-                                .addComponent(searchbytextfield2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(33, 33, 33)
-                                .addComponent(jButton1)))
-                        .addGap(0, 422, Short.MAX_VALUE)))
+                        .addGap(423, 423, 423)
+                        .addComponent(jLabel1)
+                        .addGap(0, 422, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24)
+                        .addComponent(searchbytextfield2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jCheckBox1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -147,12 +182,13 @@ public class pendingCheque extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(searchbytextfield2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1))
+                        .addComponent(jButton1)
+                        .addComponent(jCheckBox1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel4)
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -175,10 +211,16 @@ public class pendingCheque extends javax.swing.JPanel {
 
         // Check the selected search criteria and construct the query accordingly
         if (searchby.equals("Name")) {
-            query = "SELECT supplier_id, supplier_name, cheque_date,total_amount FROM purchases WHERE payment_method = 'Cheque' AND supplier_name LIKE '%" + name + "%'";
+            query = "SELECT supplier_id, supplier_name, cheque_date, total_amount, payment_status, cheque_number FROM purchases WHERE payment_method = 'Cheque' AND supplier_name LIKE '%" + name + "%'";
         } else if (searchby.equals("Date")) {
-            query = "SELECT supplier_id, supplier_name, cheque_date,total_amount FROM purchases WHERE payment_method = 'Cheque' AND cheque_date = '" + name + "'";
+            query = "SELECT supplier_id, supplier_name, cheque_date, total_amount, payment_status FROM purchases WHERE payment_method = 'Cheque' AND cheque_date = '" + name + "'";
         }
+
+        // Check if the checkbox is selected
+        if (jCheckBox1.isSelected()) {
+            query += " AND payment_status = 'Unpaid'";
+        }
+
         ResultSet rs = s.executeQuery(query);
         while (rs.next()) {
             Vector v = new Vector();
@@ -186,6 +228,8 @@ public class pendingCheque extends javax.swing.JPanel {
             v.add(rs.getString("supplier_name"));
             v.add(rs.getString("cheque_date"));
             v.add(rs.getString("total_amount"));
+            v.add(rs.getString("payment_status"));
+            v.add(rs.getString("cheque_number"));
             dt.addRow(v);
         }
     } catch (SQLException e) {
@@ -199,7 +243,13 @@ public class pendingCheque extends javax.swing.JPanel {
             dt.setRowCount(0);
             Statement s = db.mycon().createStatement();
 
-            String query = "SELECT supplier_id, supplier_name, cheque_date,total_amount FROM purchases WHERE payment_method = 'Cheque'";
+            String query = "SELECT supplier_id, supplier_name, cheque_date, total_amount, payment_status,cheque_number FROM purchases WHERE payment_method = 'Cheque'";
+
+            // Check if the checkbox is selected
+            if (jCheckBox1.isSelected()) {
+                query += " AND payment_status = 'Unpaid'";
+            }
+
             ResultSet rs = s.executeQuery(query);
             while (rs.next()) {
                 Vector v = new Vector();
@@ -207,6 +257,8 @@ public class pendingCheque extends javax.swing.JPanel {
                 v.add(rs.getString("supplier_name"));
                 v.add(rs.getString("cheque_date"));
                 v.add(rs.getString("total_amount"));
+                v.add(rs.getString("payment_status"));
+                v.add(rs.getString("cheque_number"));
                 dt.addRow(v);
             }
         } catch (SQLException e) {
@@ -214,14 +266,38 @@ public class pendingCheque extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        int row = jTable1.getSelectedRow();
+        if (row != -1) { // Ensure a row is selected
+            String payee = jTable1.getValueAt(row, 1).toString();
+            String date = jTable1.getValueAt(row, 2).toString();
+            String chequenumber = jTable1.getValueAt(row, 5).toString();
+            String amount = jTable1.getValueAt(row, 3).toString();
+            String status = jTable1.getValueAt(row, 4).toString();
+            
+
+            //Products is a class to handle displaying product details
+            PaymentConfirmer ConfirmFrame = new PaymentConfirmer();
+            ConfirmFrame.setLocationRelativeTo(null);
+            ConfirmFrame.setVisible(true);
+            ConfirmFrame.setData(payee,date,chequenumber,amount,status);
+            ConfirmFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        tb_load();
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private rojerusan.RSTableMetro jTable1;
     private javax.swing.JTextField searchbytextfield2;
     // End of variables declaration//GEN-END:variables
 }

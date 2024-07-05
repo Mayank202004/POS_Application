@@ -37,6 +37,8 @@ public class NewCustomer extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(102, 153, 255));
 
+        jPanel2.setBackground(new java.awt.Color(217, 227, 241));
+
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Customer Name");
 

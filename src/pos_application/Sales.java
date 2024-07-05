@@ -124,6 +124,10 @@ private void resetLabels() {
 private void saveSales(){
         double totalamount=Double.parseDouble(jLabel19.getText()); //to store total amount of order
         double totaldiscount=Double.parseDouble(jLabel22.getText()); // to store total discount of order
+        double shoppingValue=totalamount+totaldiscount; //TO strore total shopping amount (i.e mrp total)
+        String paymentmethod = jComboBox2.getSelectedItem().toString(); //payment method from combobox
+        String amountPaidText = jTextField7.getText().trim(); //amount paid from jtextfield7
+        double amountPaid = amountPaidText.isEmpty() ? totalamount : Double.parseDouble(amountPaidText);
         int orderID=Integer.parseInt(jLabel2.getText());
         try{
             Statement s=db.mycon().createStatement();
@@ -142,7 +146,7 @@ private void saveSales(){
             String formattedDate = currentDateTime.format(dateFormatter);
             String formattedTime = currentDateTime.format(timeFormatter);
             // Inserting overall order info into orders table
-            s.executeUpdate("INSERT INTO orders (order_id, order_date, order_time, customer_id, customer_name, total_amount, payment_method, discounts) VALUES (" + orderID + ", '" + formattedDate + "', '" + formattedTime + "', " + customerID + ", '" + customerName + "', " + totalamount + ", null, " + totaldiscount + ");");
+            s.executeUpdate("INSERT INTO orders (order_id, order_date, order_time, customer_id, customer_name, total_amount, payment_method, discounts, shopping_value, amount_paid) VALUES (" + orderID + ", '" + formattedDate + "', '" + formattedTime + "', " + customerID + ", '" + customerName + "', " + totalamount + ", '" + paymentmethod + "', " + totaldiscount + ", " + shoppingValue + ", " + amountPaid + ");");
 
             System.out.println("Length of formattedDate: " + formattedDate.length());
             //inserting all items detail to order_items table
@@ -156,9 +160,15 @@ private void saveSales(){
             }
             Home.setminireport();
             
+            // Display success message
+            JOptionPane.showMessageDialog(null, "Sales saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            
         }
         catch(NumberFormatException | SQLException e){
-        System.out.println(e);}
+            System.out.println(e);
+            // Display error message
+            JOptionPane.showMessageDialog(null, "Error saving sales:\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 }
 
 // The following method is used to set date and set invoice number 
@@ -191,6 +201,12 @@ protected void setCustomerDetails(String id,String name,String mobile){
     jTextField2.setText(mobile);
 
 }
+//This method is used to display the amout that should be returned to the customer
+private void returnAmount(double amountReceived,double billedAmount) {
+    double returnAmount = amountReceived - billedAmount;
+    jLabel18.setText(String.format("%.2f", returnAmount));  
+}
+
 
 
     
@@ -251,6 +267,10 @@ protected void setCustomerDetails(String id,String name,String mobile){
         jLabel17 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
+        jPanel16 = new javax.swing.JPanel();
+        jPanel17 = new javax.swing.JPanel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jLabel24 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setSize(new java.awt.Dimension(1280, 720));
@@ -747,6 +767,52 @@ protected void setCustomerDetails(String id,String name,String mobile){
         jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel18.setText("00.00");
 
+        jPanel16.setBackground(new java.awt.Color(0, 153, 255));
+
+        jPanel17.setBackground(new java.awt.Color(204, 204, 204));
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "UPI", "Card" }));
+
+        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
+        jPanel17.setLayout(jPanel17Layout);
+        jPanel17Layout.setHorizontalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel17Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel17Layout.setVerticalGroup(
+            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel17Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel24.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel24.setText("PAYMENT METHOD");
+
+        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
+        jPanel16.setLayout(jPanel16Layout);
+        jPanel16Layout.setHorizontalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel16Layout.setVerticalGroup(
+            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -789,6 +855,8 @@ protected void setCustomerDetails(String id,String name,String mobile){
                                 .addGap(184, 184, 184))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel17)
@@ -798,7 +866,7 @@ protected void setCustomerDetails(String id,String name,String mobile){
                                 .addComponent(jLabel16)
                                 .addGap(18, 18, 18)
                                 .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(144, 144, 144))))
+                        .addGap(24, 24, 24))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -821,15 +889,18 @@ protected void setCustomerDetails(String id,String name,String mobile){
                             .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(32, 32, 32)
                         .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel16)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel17)
-                            .addComponent(jLabel18))
-                        .addGap(42, 42, 42)
+                        .addGap(47, 47, 47)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel17)
+                                    .addComponent(jLabel18)))
+                            .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1055,11 +1126,49 @@ protected void setCustomerDetails(String id,String name,String mobile){
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // pay save and print button logics
-        saveSales();
+        String amountReceivedText = jTextField7.getText();
+        double amountReceived=-1;
+        double billedAmount=0;
+        // If no paid amount is given, assume it to be equal to billed amount
+        try{
+            billedAmount = Integer.parseInt(jLabel19.getText());
+            amountReceived = amountReceivedText.isEmpty() ? Double.parseDouble(jLabel19.getText()) : Double.parseDouble(amountReceivedText);
+        }
+        catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Please enter valid numeric values.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e);
+        }
+        if(amountReceived>=billedAmount){
+            saveSales();
+            returnAmount(amountReceived,billedAmount);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Amount paid must be greater than or equal to the billed amount.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        saveSales();
+        // Pay and save logic
+        
+        String amountReceivedText = jTextField7.getText();
+        double amountReceived=-1;
+        double billedAmount=0;
+        // If no paid amount is given, assume it to be equal to billed amount
+        try{
+            billedAmount = Double.parseDouble(jLabel19.getText());
+            amountReceived = amountReceivedText.isEmpty() ? Double.parseDouble(jLabel19.getText()) : Double.parseDouble(amountReceivedText);
+        }
+        catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Please enter valid numeric values.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e);
+        }
+        if(amountReceived>=billedAmount){
+            saveSales();
+            returnAmount(amountReceived,billedAmount);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Amount paid must be greater than or equal to the billed amount.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -1124,6 +1233,7 @@ protected void setCustomerDetails(String id,String name,String mobile){
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1140,6 +1250,7 @@ protected void setCustomerDetails(String id,String name,String mobile){
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1152,6 +1263,8 @@ protected void setCustomerDetails(String id,String name,String mobile){
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
+    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

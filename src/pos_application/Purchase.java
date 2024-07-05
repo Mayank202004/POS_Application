@@ -29,20 +29,20 @@ public class Purchase extends javax.swing.JFrame {
 private void insertOrUpdateRow(DefaultTableModel dt) {
     try {
         Statement s = db.mycon().createStatement();
-        ResultSet res = s.executeQuery("select * from products where ProductID='" + jTextField5.getText() + "'");
+        ResultSet res = s.executeQuery("select * from products where ProductID='" + product_id_text.getText() + "'");
         if (res.next()) {
             // Check if the item is already in the table
-            String productName = jComboBox1.getSelectedItem().toString();
+            String productName = product_name_combobox.getSelectedItem().toString();
             int existingRow = findRowByProductName(dt, productName);
 
             if (existingRow != -1) {
                 // Item is already in the table, increment the quantity
                 int currentQuantity = Integer.parseInt(dt.getValueAt(existingRow, 4).toString());
-                dt.setValueAt(String.valueOf(currentQuantity + Integer.parseInt(jTextField4.getText())), existingRow, 4);
+                dt.setValueAt(String.valueOf(currentQuantity + Integer.parseInt(product_qty_text.getText())), existingRow, 4);
                 
                 // Update the total value based on the new quantity
                 Double MRP = Double.valueOf(res.getString("MRP"));
-                dt.setValueAt(String.valueOf(MRP * (currentQuantity + Integer.parseInt(jTextField4.getText()))), existingRow, 6);
+                dt.setValueAt(String.valueOf(MRP * (currentQuantity + Integer.parseInt(product_qty_text.getText()))), existingRow, 6);
             } else {
                 Double MRP = Double.valueOf(res.getString("MRP"));
                 Double SP = Double.valueOf(res.getString("SellingPrice"));
@@ -50,12 +50,12 @@ private void insertOrUpdateRow(DefaultTableModel dt) {
 
                 Vector<Object> v = new Vector<>();
                 v.add(productName);
-                v.add(jTextField6.getText());
+                v.add(barcode_text.getText());
                 v.add(String.valueOf(SP));
                 v.add(String.valueOf(MRP));
-                v.add(jTextField4.getText());
+                v.add(product_qty_text.getText());
                 v.add(String.valueOf(BP));
-                v.add(String.valueOf(BP * Integer.valueOf(jTextField4.getText())));
+                v.add(String.valueOf(BP * Integer.valueOf(product_qty_text.getText())));
                 dt.addRow(v); //Adding row to table
             }
             updateTotal();
@@ -96,21 +96,21 @@ private void updateTotal() {
     }
 
     // Update the JLabel19 with the calculated total
-    jLabel19.setText(String.valueOf(total));
+    total_amount_label.setText(String.valueOf(total));
     
     // Update JLabel20 with the total number of items
-    jLabel20.setText(String.valueOf(totalItems));
+    items_label.setText(String.valueOf(totalItems));
 
     // Update JLabel21 with the total quantity
-    jLabel21.setText(String.valueOf(totalQuantity));
+    quantity_label.setText(String.valueOf(totalQuantity));
     
 }
 
 //following method used to reset labels (total price etc) to default
 private void resetLabels() {
-    jLabel19.setText("00.00");
-    jLabel20.setText("00");
-    jLabel21.setText("00");
+    total_amount_label.setText("00.00");
+    items_label.setText("00");
+    quantity_label.setText("00");
 }
 
 
@@ -124,7 +124,7 @@ private void savePurchase(){
             return; // Exit the method without saving
         }
          //to store total amount of order
-        double totalamount = jTextField7.getText().isEmpty() ? Double.parseDouble(jLabel19.getText()) : Double.parseDouble(jTextField7.getText());
+        double totalamount = edit_total_text.getText().isEmpty() ? Double.parseDouble(total_amount_label.getText()) : Double.parseDouble(edit_total_text.getText());
         int orderID=Integer.parseInt(jLabel2.getText());
         try{
             Statement s=db.mycon().createStatement();
@@ -135,21 +135,36 @@ private void savePurchase(){
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
 
             // Checking if customerID and customer Name are empty or not
-            String supplierIDText = jTextField3.getText().trim();
+            String supplierIDText = supplier_id_text.getText().trim();
             Integer supplierID = supplierIDText.isEmpty() ? null : Integer.valueOf(supplierIDText);
-            String supplierName = jTextField1.getText().trim();
+            String supplierName = supplier_name_text.getText().trim();
             supplierName = supplierName.isEmpty() ? null : supplierName;
             
             //Getting payment method
-            String payMethod = (String) jComboBox2.getSelectedItem();
+            String payMethod = (String) Payment_Method_ComboBox.getSelectedItem();
             
             //Getting Cheque date if applicable (if not empty)
-            String ChequeDate = jTextField11.getText().trim();
+            String ChequeDate = cheque_date_text.getText().trim();
             ChequeDate = ChequeDate.isEmpty() ? null : ChequeDate;
+            
+            //Getting Cheque Number if applicable (if not empty)
+            String ChequeNumber = cheque_number_text.getText().trim();
+            ChequeNumber = ChequeNumber.isEmpty() ? null : ChequeNumber;
+            
+            if (payMethod.equals("Cheque")) {
+                if(ChequeDate==null || ChequeNumber==null){
+                    JOptionPane.showMessageDialog(null, "Cheque Date and Cheque Number are manditory if payment method is by cheque.", "ALl Fields are Necessary", JOptionPane.ERROR_MESSAGE);
+                    return; // Exit the method without saving
+                }
+            }
+            String payment_status="Paid";
+            if(ChequeDate!=null){
+                payment_status="Unpaid";
+            }
             String formattedDate = currentDateTime.format(dateFormatter);
             String formattedTime = currentDateTime.format(timeFormatter);
             // Inserting overall order info into orders table
-            s.executeUpdate("INSERT INTO purchases (purchase_id, purchase_date, purchase_time, supplier_id, supplier_name, total_amount, payment_method, cheque_date) VALUES (" + orderID + ", '" + formattedDate + "', '" + formattedTime + "', " + supplierID + ", '" + supplierName + "', " + totalamount + ", '"+payMethod+"', '"+ChequeDate+"');");
+            s.executeUpdate("INSERT INTO purchases (purchase_id, purchase_date, purchase_time, supplier_id, supplier_name, total_amount, payment_method, cheque_date,cheque_number, payment_status) VALUES (" + orderID + ", '" + formattedDate + "', '" + formattedTime + "', " + supplierID + ", '" + supplierName + "', " + totalamount + ", '"+payMethod+"', '"+ChequeDate+"','"+ChequeNumber+"', '"+payment_status+"');");
             //inserting all items detail to order_items table
             for (int i = 0; i < model.getRowCount(); i++){     
                 s.executeUpdate("INSERT INTO purchase_items (purchase_id,purchase_date, product_name, barcode, quantity, mrp, sp, buying_price, total) VALUES (" + orderID + ",'" + formattedDate + "', '" + model.getValueAt(i, 0).toString() + "', '" + model.getValueAt(i, 1).toString() + "', "+Integer.valueOf(model.getValueAt(i, 4).toString())+", '" + Double.valueOf(model.getValueAt(i, 3).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 2).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 5).toString()) + "', '" + Double.valueOf(model.getValueAt(i, 6).toString()) + "');");
@@ -191,9 +206,9 @@ private void setInvoiceNumberAndDate(){
 
 //This is used when clicked add new supplier (used to set supplier id, name , mobile number (setter method))
 protected void setSupplierDetails(String id,String name,String mobile){
-    jTextField3.setText(id);
-    jTextField1.setText(name);
-    jTextField2.setText(mobile);
+    supplier_id_text.setText(id);
+    supplier_name_text.setText(name);
+    supplier_contact_text.setText(mobile);
 
 }
 
@@ -210,23 +225,23 @@ protected void setSupplierDetails(String id,String name,String mobile){
         jLabel4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        supplier_name_text = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        supplier_contact_text = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
+        supplier_id_text = new javax.swing.JTextField();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jTextField6 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        barcode_text = new javax.swing.JTextField();
+        product_name_combobox = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        product_id_text = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField8 = new javax.swing.JTextField();
+        product_qty_text = new javax.swing.JTextField();
+        product_search_text = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -237,30 +252,35 @@ protected void setSupplierDetails(String id,String name,String mobile){
         jButton6 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        jLabel21 = new javax.swing.JLabel();
+        quantity_label = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
-        jLabel20 = new javax.swing.JLabel();
+        items_label = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
+        total_amount_label = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
-        jTextField7 = new javax.swing.JTextField();
+        edit_total_text = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         jPanel16 = new javax.swing.JPanel();
         jPanel17 = new javax.swing.JPanel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        Payment_Method_ComboBox = new javax.swing.JComboBox<>();
         jLabel16 = new javax.swing.JLabel();
         jPanel26 = new javax.swing.JPanel();
         jPanel27 = new javax.swing.JPanel();
-        jTextField11 = new javax.swing.JTextField();
+        cheque_date_text = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
+        jPanel28 = new javax.swing.JPanel();
+        jPanel29 = new javax.swing.JPanel();
+        cheque_number_text = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(217, 227, 241));
         setSize(new java.awt.Dimension(1280, 720));
 
         jPanel1.setBackground(new java.awt.Color(102, 153, 255));
@@ -308,17 +328,17 @@ protected void setSupplierDetails(String id,String name,String mobile){
 
         jLabel5.setText("Supplier Name :");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        supplier_name_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                supplier_name_textActionPerformed(evt);
             }
         });
 
         jLabel6.setText("Contact");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        supplier_contact_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                supplier_contact_textActionPerformed(evt);
             }
         });
 
@@ -346,15 +366,15 @@ protected void setSupplierDetails(String id,String name,String mobile){
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(supplier_id_text, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(supplier_name_text, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(supplier_contact_text, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -370,15 +390,15 @@ protected void setSupplierDetails(String id,String name,String mobile){
                         .addComponent(jLabel6)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addGap(22, 22, 22)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(supplier_contact_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(supplier_id_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(supplier_name_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -391,53 +411,53 @@ protected void setSupplierDetails(String id,String name,String mobile){
 
         jLabel10.setText("Barcode :");
 
-        jTextField6.addActionListener(new java.awt.event.ActionListener() {
+        barcode_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField6ActionPerformed(evt);
+                barcode_textActionPerformed(evt);
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        product_name_combobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { " " }));
+        product_name_combobox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                product_name_comboboxActionPerformed(evt);
             }
         });
-        jComboBox1.addKeyListener(new java.awt.event.KeyAdapter() {
+        product_name_combobox.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                jComboBox1KeyReleased(evt);
+                product_name_comboboxKeyReleased(evt);
             }
         });
 
         jLabel9.setText("Product ID");
 
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        product_id_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                product_id_textActionPerformed(evt);
             }
         });
-        jTextField5.addKeyListener(new java.awt.event.KeyAdapter() {
+        product_id_text.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTextField5KeyPressed(evt);
+                product_id_textKeyPressed(evt);
             }
         });
 
         jLabel14.setText("Qty");
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        product_qty_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                product_qty_textActionPerformed(evt);
             }
         });
 
-        jTextField8.addActionListener(new java.awt.event.ActionListener() {
+        product_search_text.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField8ActionPerformed(evt);
+                product_search_textActionPerformed(evt);
             }
         });
-        jTextField8.addKeyListener(new java.awt.event.KeyAdapter() {
+        product_search_text.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextField8KeyReleased(evt);
+                product_search_textKeyReleased(evt);
             }
         });
 
@@ -451,26 +471,26 @@ protected void setSupplierDetails(String id,String name,String mobile){
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel9)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(product_id_text, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(barcode_text, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(11, 11, 11)
                         .addComponent(jLabel8))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(product_name_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel23)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(product_search_text, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel14)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(product_qty_text, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(48, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -481,14 +501,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
                     .addComponent(jLabel9)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(product_id_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel10)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(barcode_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(product_name_combobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel8)
                             .addGap(28, 28, 28))
@@ -496,11 +516,11 @@ protected void setSupplierDetails(String id,String name,String mobile){
                             .addComponent(jLabel14)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(22, 22, 22)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(product_qty_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanel3Layout.createSequentialGroup()
                             .addComponent(jLabel23)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(product_search_text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -553,9 +573,9 @@ protected void setSupplierDetails(String id,String name,String mobile){
 
         jPanel5.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel21.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel21.setText("00");
+        quantity_label.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        quantity_label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        quantity_label.setText("00");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -563,14 +583,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(quantity_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addContainerGap(7, Short.MAX_VALUE)
-                .addComponent(jLabel21)
+                .addComponent(quantity_label)
                 .addContainerGap())
         );
 
@@ -601,9 +621,9 @@ protected void setSupplierDetails(String id,String name,String mobile){
 
         jPanel7.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel20.setText("00");
+        items_label.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        items_label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        items_label.setText("00");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -611,14 +631,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(items_label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(7, Short.MAX_VALUE)
-                .addComponent(jLabel20)
+                .addComponent(items_label)
                 .addContainerGap())
         );
 
@@ -649,9 +669,9 @@ protected void setSupplierDetails(String id,String name,String mobile){
 
         jPanel11.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel19.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("00.00");
+        total_amount_label.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        total_amount_label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        total_amount_label.setText("00.00");
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -659,14 +679,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                .addComponent(total_amount_label, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
                 .addContainerGap(7, Short.MAX_VALUE)
-                .addComponent(jLabel19)
+                .addComponent(total_amount_label)
                 .addContainerGap())
         );
 
@@ -702,14 +722,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField7)
+                .addComponent(edit_total_text)
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addComponent(edit_total_text, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -740,7 +760,7 @@ protected void setSupplierDetails(String id,String name,String mobile){
 
         jPanel17.setBackground(new java.awt.Color(204, 204, 204));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "UPI", "Cheque" }));
+        Payment_Method_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "UPI", "Cheque" }));
 
         javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
         jPanel17.setLayout(jPanel17Layout);
@@ -748,14 +768,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Payment_Method_ComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel17Layout.setVerticalGroup(
             jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel17Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(Payment_Method_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -792,14 +812,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel27Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField11)
+                .addComponent(cheque_date_text)
                 .addContainerGap())
         );
         jPanel27Layout.setVerticalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel27Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addComponent(cheque_date_text, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -826,6 +846,50 @@ protected void setSupplierDetails(String id,String name,String mobile){
                 .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        jPanel28.setBackground(new java.awt.Color(0, 153, 255));
+
+        jPanel29.setBackground(new java.awt.Color(204, 204, 204));
+
+        javax.swing.GroupLayout jPanel29Layout = new javax.swing.GroupLayout(jPanel29);
+        jPanel29.setLayout(jPanel29Layout);
+        jPanel29Layout.setHorizontalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel29Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cheque_number_text)
+                .addContainerGap())
+        );
+        jPanel29Layout.setVerticalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel29Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cheque_number_text, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel18.setText("CHEQUE NUMBER");
+
+        javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
+        jPanel28.setLayout(jPanel28Layout);
+        jPanel28Layout.setHorizontalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel28Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel28Layout.setVerticalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel28Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel29, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -844,11 +908,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(141, 141, 141)
+                                        .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(584, Short.MAX_VALUE))
+                                .addContainerGap(237, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -891,15 +958,20 @@ protected void setSupplierDetails(String id,String name,String mobile){
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(45, 45, 45)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(29, 29, 29)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(45, 45, 45)
+                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jPanel28, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)))
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -913,17 +985,17 @@ protected void setSupplierDetails(String id,String name,String mobile){
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void supplier_contact_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplier_contact_textActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_supplier_contact_textActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void supplier_name_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplier_name_textActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_supplier_name_textActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+    private void product_id_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_product_id_textActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    }//GEN-LAST:event_product_id_textActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // New Sales 
@@ -937,31 +1009,31 @@ protected void setSupplierDetails(String id,String name,String mobile){
         SalesFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void product_qty_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_product_qty_textActionPerformed
         //insert row into table jTable1
         insertOrUpdateRow((DefaultTableModel) jTable1.getModel());
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_product_qty_textActionPerformed
 
-    private void jComboBox1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox1KeyReleased
+    private void product_name_comboboxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_product_name_comboboxKeyReleased
         //
-    }//GEN-LAST:event_jComboBox1KeyReleased
+    }//GEN-LAST:event_product_name_comboboxKeyReleased
 
-    private void jTextField8KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField8KeyReleased
-        String userInput = jTextField8.getText();
+    private void product_search_textKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_product_search_textKeyReleased
+        String userInput = product_search_text.getText();
         try {
             Statement s = db.mycon().createStatement();
             ResultSet res = s.executeQuery("SELECT * FROM products WHERE ProductName LIKE '%" + userInput + "%'");
             // Clear existing items before adding new ones
-            jComboBox1.removeAllItems();
-            jComboBox1.addItem(""); // Adding a blank option to avoid issues wrt search product with product name
+            product_name_combobox.removeAllItems();
+            product_name_combobox.addItem(""); // Adding a blank option to avoid issues wrt search product with product name
             while (res.next()) {
                 String name = res.getString("ProductName");
-                jComboBox1.addItem(name);
+                product_name_combobox.addItem(name);
             }
         } catch (SQLException e) {
             System.out.println(e);
         }
-    }//GEN-LAST:event_jTextField8KeyReleased
+    }//GEN-LAST:event_product_search_textKeyReleased
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         NewSupplier sup = new NewSupplier(this);
@@ -970,21 +1042,21 @@ protected void setSupplierDetails(String id,String name,String mobile){
         sup.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_jButton8ActionPerformed
 
-    private void jTextField5KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField5KeyPressed
+    private void product_id_textKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_product_id_textKeyPressed
          // This method is called when a key is pressed
-                if (jTextField5.isFocusOwner() && evt.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (product_id_text.isFocusOwner() && evt.getKeyCode() == KeyEvent.VK_ENTER) {
                 // Enter key is pressed
-                    String productId = jTextField5.getText();
+                    String productId = product_id_text.getText();
                     try {
                     Statement s = db.mycon().createStatement();
                     ResultSet res = s.executeQuery("select * from products where ProductID='" + productId + "'");  
                     if (res.next()) {
-                        jTextField6.setText(res.getString("Barcode"));
-                        jComboBox1.addItem(res.getString("ProductName"));
-                        jComboBox1.setSelectedItem(res.getString("ProductName"));
-                        jTextField4.setText("1");
-                        jTextField4.requestFocus(); //use to transfer cursor to textfield 4
-                        jTextField4.selectAll(); //use to select text field 4 text for easy updatation of qty
+                        barcode_text.setText(res.getString("Barcode"));
+                        product_name_combobox.addItem(res.getString("ProductName"));
+                        product_name_combobox.setSelectedItem(res.getString("ProductName"));
+                        product_qty_text.setText("1");
+                        product_qty_text.requestFocus(); //use to transfer cursor to textfield 4
+                        product_qty_text.selectAll(); //use to select text field 4 text for easy updatation of qty
                     } else {
                         // Handle the case where no rows were found for the given ProductID
                         String message = "No product found with ProductID: " + productId;
@@ -994,15 +1066,15 @@ protected void setSupplierDetails(String id,String name,String mobile){
                         System.out.println(e);
             }
         }
-    }//GEN-LAST:event_jTextField5KeyPressed
+    }//GEN-LAST:event_product_id_textKeyPressed
 
-    private void jTextField8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField8ActionPerformed
+    private void product_search_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_product_search_textActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField8ActionPerformed
+    }//GEN-LAST:event_product_search_textActionPerformed
 
-    private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
+    private void barcode_textActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_barcode_textActionPerformed
         //Enter item into table when barcode is scanner through jTextField6
-        String Barcode = jTextField6.getText().trim();
+        String Barcode = barcode_text.getText().trim();
         if (!Barcode.isEmpty()) {
         try{
                 Statement s = db.mycon().createStatement();
@@ -1036,8 +1108,8 @@ protected void setSupplierDetails(String id,String name,String mobile){
                     }
                     updateTotal();
                     // Clear barcode text field and set focus on same to scan next barcode instantly
-                    jTextField6.setText("");
-                    jTextField6.requestFocus();  
+                    barcode_text.setText("");
+                    barcode_text.requestFocus();  
                 } else {
                     // Handle the case where no rows were found for the given ProductID
                     String message = "No product found with Barcode: " + Barcode;
@@ -1047,26 +1119,26 @@ protected void setSupplierDetails(String id,String name,String mobile){
         catch(HeadlessException | SQLException e){
         System.out.println(e);}
         } 
-    }//GEN-LAST:event_jTextField6ActionPerformed
+    }//GEN-LAST:event_barcode_textActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        if (jComboBox1.getSelectedItem() != null) {
-            String ProductName = jComboBox1.getSelectedItem().toString();
+    private void product_name_comboboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_product_name_comboboxActionPerformed
+        if (product_name_combobox.getSelectedItem() != null) {
+            String ProductName = product_name_combobox.getSelectedItem().toString();
             try{
                 Statement s = db.mycon().createStatement();
                 ResultSet res = s.executeQuery("select * from products where ProductName='" + ProductName + "'");
                 if (res.next()) {
-                    jTextField5.setText(res.getString("ProductID"));
-                    jTextField6.setText(res.getString("Barcode"));
-                    jTextField4.setText("1");
-                    jTextField4.requestFocus();
-                    jTextField4.selectAll();
+                    product_id_text.setText(res.getString("ProductID"));
+                    barcode_text.setText(res.getString("Barcode"));
+                    product_qty_text.setText("1");
+                    product_qty_text.requestFocus();
+                    product_qty_text.selectAll();
                 }
             }
             catch(SQLException e){
             System.out.println(e);}
         }
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_product_name_comboboxActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -1090,19 +1162,19 @@ protected void setSupplierDetails(String id,String name,String mobile){
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int selectedRow = jTable1.getSelectedRow();
-        jComboBox1.addItem(model.getValueAt(selectedRow, 0).toString());
-        jComboBox1.setSelectedItem(model.getValueAt(selectedRow, 0).toString());
-        if (jComboBox1.getSelectedItem() != null) {
-            String ProductName = jComboBox1.getSelectedItem().toString();
+        product_name_combobox.addItem(model.getValueAt(selectedRow, 0).toString());
+        product_name_combobox.setSelectedItem(model.getValueAt(selectedRow, 0).toString());
+        if (product_name_combobox.getSelectedItem() != null) {
+            String ProductName = product_name_combobox.getSelectedItem().toString();
             try{
                 Statement s = db.mycon().createStatement();
                 ResultSet res = s.executeQuery("select * from products where ProductName='" + ProductName + "'");
                 if (res.next()) {
-                    jTextField5.setText(res.getString("ProductID"));
-                    jTextField6.setText(res.getString("Barcode"));
-                    jTextField4.setText(model.getValueAt(selectedRow, 4).toString());
-                    jTextField4.requestFocus();
-                    jTextField4.selectAll();
+                    product_id_text.setText(res.getString("ProductID"));
+                    barcode_text.setText(res.getString("Barcode"));
+                    product_qty_text.setText(model.getValueAt(selectedRow, 4).toString());
+                    product_qty_text.requestFocus();
+                    product_qty_text.selectAll();
                 }
                 if (selectedRow != -1) { // -1 indicates no row is selected
                     model.removeRow(selectedRow);
@@ -1125,13 +1197,13 @@ protected void setSupplierDetails(String id,String name,String mobile){
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        String id = jTextField3.getText().trim();
+        String id = supplier_id_text.getText().trim();
         try{
                 Statement s = db.mycon().createStatement();
                 ResultSet res = s.executeQuery("select * from supplier where SupplierID='" + id + "'");
                 if (res.next()) {
-                    jTextField1.setText(res.getString("SupplierName"));
-                    jTextField2.setText(res.getString("SupplierPhoneNumber"));
+                    supplier_name_text.setText(res.getString("SupplierName"));
+                    supplier_contact_text.setText(res.getString("SupplierPhoneNumber"));
                 }
                 else{
                     JOptionPane.showMessageDialog(null, "No supplier found", "Supplier Not Found", JOptionPane.INFORMATION_MESSAGE);
@@ -1178,6 +1250,12 @@ protected void setSupplierDetails(String id,String name,String mobile){
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> Payment_Method_ComboBox;
+    private javax.swing.JTextField barcode_text;
+    private javax.swing.JTextField cheque_date_text;
+    private javax.swing.JTextField cheque_number_text;
+    private javax.swing.JTextField edit_total_text;
+    private javax.swing.JLabel items_label;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -1185,8 +1263,6 @@ protected void setSupplierDetails(String id,String name,String mobile){
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1196,10 +1272,8 @@ protected void setSupplierDetails(String id,String name,String mobile){
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1218,6 +1292,8 @@ protected void setSupplierDetails(String id,String name,String mobile){
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel28;
+    private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -1225,14 +1301,14 @@ protected void setSupplierDetails(String id,String name,String mobile){
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextField product_id_text;
+    private javax.swing.JComboBox<String> product_name_combobox;
+    private javax.swing.JTextField product_qty_text;
+    private javax.swing.JTextField product_search_text;
+    private javax.swing.JLabel quantity_label;
+    private javax.swing.JTextField supplier_contact_text;
+    private javax.swing.JTextField supplier_id_text;
+    private javax.swing.JTextField supplier_name_text;
+    private javax.swing.JLabel total_amount_label;
     // End of variables declaration//GEN-END:variables
 }
