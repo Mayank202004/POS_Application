@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" columnCount="3" pageWidth="326" pageHeight="68" columnWidth="93" columnSpacing="16" leftMargin="7" rightMargin="7" topMargin="0" bottomMargin="0" uuid="a42d49b0-6e98-4dc4-88ee-0084e5a870b4">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="productid" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from products where ProductID=$P{productid};]]>
+	</queryString>
+	<field name="ProductID" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ProductName" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Category" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Barcode" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="BuyingPrice" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="MRP" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SellingPrice" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Quantity" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="MinQTY" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="3" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="25" y="50" width="37" height="7" uuid="9ddee186-3bb4-4ff6-99ec-3174fc491734"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ProductID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="217" y="0" width="16" height="17" uuid="c82f37df-e410-4006-ad33-e62680e7c5c5"/>
+				<textElement>
+					<font fontName="Showcard Gothic" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JP]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="170" y="57" width="28" height="11" uuid="d0223c80-f6b3-4685-aa9a-abfa911cc50b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SellingPrice}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="12" y="29" width="70" height="23" uuid="e8a37eec-2c21-4603-835b-7c49cc6a3930"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39 (Extended)" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA["1234"]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="127" y="0" width="75" height="20" uuid="698a28b1-3d5f-4553-8cdc-4c97a7dc3191"/>
+				<textElement>
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JP's Global]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="228" y="29" width="70" height="23" uuid="d566f66f-3eb9-4525-9be6-73f53ba4083d"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39 (Extended)" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA["1234"]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<staticText>
+				<reportElement x="258" y="57" width="20" height="11" uuid="c19022c0-e88c-412d-8496-01aed94661d9"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MRP:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="278" y="57" width="28" height="11" uuid="3937d5eb-3654-48de-a131-1c57eabff97e"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SellingPrice}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1" y="0" width="16" height="17" uuid="5122edf4-f17c-43d9-b835-e36508e182e3"/>
+				<textElement>
+					<font fontName="Showcard Gothic" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="113" y="57" width="14" height="11" uuid="b88946e5-144b-445f-b14b-6345854c8f66"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SP:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="245" y="52" width="37" height="7" uuid="b24ed1b9-2bb7-44d9-9d0c-1c9235833d22"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ProductID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="218" y="15" width="89" height="13" uuid="a465b1ca-3003-40b2-b689-2bfff1738d75"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{ProductName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="235" y="57" width="23" height="11" uuid="714810e6-84b5-465e-8571-d1c2d94be1d7"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SellingPrice}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="57" width="14" height="11" uuid="d944ab11-0844-4cb0-8833-84d2088dc13d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SP:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="221" y="57" width="14" height="11" uuid="68e46fb6-de65-43e5-b00f-c62c3e1530d3"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[SP:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="2" y="15" width="89" height="13" uuid="ba1e588f-2cb4-47b9-a5d0-93859458de7e"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{ProductName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="109" y="0" width="16" height="17" uuid="a2d1020f-8f6f-487f-81c8-3a85cd1c3447"/>
+				<textElement>
+					<font fontName="Showcard Gothic" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="19" y="0" width="75" height="20" uuid="f05d5fb2-921e-4ba0-bfd8-8ca62155e5ca"/>
+				<textElement>
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JP's Global]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="235" y="0" width="75" height="20" uuid="854d0fd0-691b-43d0-9ede-0eaa7796371a"/>
+				<textElement>
+					<font size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JP's Global]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="42" y="57" width="20" height="11" uuid="6cbbbf9f-80db-48a2-ab3d-dea659d1b33d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MRP:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="110" y="15" width="89" height="13" uuid="7120594b-e399-4b11-8083-4649937a10ac"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{ProductName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="127" y="57" width="23" height="11" uuid="5693b0d0-36af-4448-bceb-87a926750691"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SellingPrice}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="133" y="50" width="37" height="7" uuid="235798ae-2704-4a63-94ec-d8672fbbccb4"/>
+				<textElement textAlignment="Center">
+					<font size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ProductID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="150" y="57" width="20" height="11" uuid="f178fc1d-1213-4714-b814-e7f4da719a49"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MRP:]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="120" y="29" width="70" height="23" uuid="81e70070-ae32-4b3c-9c2f-e71730397165"/>
+				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code39 (Extended)" drawText="false" checksumRequired="false">
+					<jr:codeExpression><![CDATA["1234"]]></jr:codeExpression>
+				</jr:barbecue>
+			</componentElement>
+			<textField>
+				<reportElement x="19" y="57" width="23" height="11" uuid="28e7ffed-0622-4830-9183-716f1cc2f5bb"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SellingPrice}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="62" y="57" width="28" height="11" uuid="0e1f0e17-35f6-4552-9309-d736ee9ae085"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SellingPrice}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

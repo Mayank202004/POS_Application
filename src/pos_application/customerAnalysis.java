@@ -8,6 +8,8 @@ import Dependency.db;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  *
@@ -173,6 +175,51 @@ public class customerAnalysis extends javax.swing.JPanel {
             value3.setText("None");
         }
         val3.close();
+        
+        
+        // weekly frequent custmer
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        String todayDate = sdf.format(calendar.getTime());    
+        // Get the start date of the current week (Monday)
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        String weeklyStartDate = sdf.format(calendar.getTime());
+
+        // Execute the query to find the most frequent customer in the current week
+        String query = "SELECT customer_name, COUNT(*) AS order_count " +
+                           "FROM orders " +
+                           "WHERE STR_TO_DATE(order_date, '%d/%m/%Y') BETWEEN STR_TO_DATE('" + weeklyStartDate + "', '%d/%m/%Y') AND STR_TO_DATE('" + todayDate + "', '%d/%m/%Y') " +
+                           "GROUP BY customer_id, customer_name " +
+                           "ORDER BY order_count DESC " +
+                           "LIMIT 1";
+        ResultSet weeklyResult = s.executeQuery(query);
+        // Process the result
+        if (weeklyResult.next()) {
+            String mostFrequentCustomer = weeklyResult.getString("customer_name")+" ("+weeklyResult.getString("order_count")+")";
+            value4.setText(mostFrequentCustomer);
+        }
+        else{
+            value4.setText("None");}
+        weeklyResult.close();
+        
+        // montly frequent customer 
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String monthlyStartDate = sdf.format(calendar.getTime());
+        // Execute the query to find the most frequent customer in the current month
+        query = "SELECT customer_name, COUNT(*) AS order_count " +
+                           "FROM orders " +
+                           "WHERE STR_TO_DATE(order_date, '%d/%m/%Y') BETWEEN STR_TO_DATE('" + monthlyStartDate + "', '%d/%m/%Y') AND STR_TO_DATE('" + todayDate + "', '%d/%m/%Y') " +
+                           "GROUP BY customer_id, customer_name " +
+                           "ORDER BY order_count DESC " +
+                           "LIMIT 1";
+        ResultSet monthlyResult = s.executeQuery(query);
+        if (monthlyResult.next()) {
+            String mostFrequentCustomer = monthlyResult.getString("customer_name")+" ("+monthlyResult.getString("order_count")+")";
+            value5.setText(mostFrequentCustomer);
+        }
+        else{
+            value5.setText("None");}
+        monthlyResult.close();
 
         s.close();
     } catch (SQLException e) {

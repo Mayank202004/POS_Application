@@ -3,13 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/Dependency/ListMenu.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/NewCustomer.java</file>
             <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Home.java</file>
             <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Supplier.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/pendingCheque.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/PaymentConfirmer.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/homeImage.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Purchase.java</file>
-            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/ProductList.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/barcodePrint.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/Dependency/barcode.jrxml</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/Sales_History.java</file>
+            <file>file:/C:/Users/mayan/Documents/NetBeansProjects/POS_Application/src/pos_application/MenuItem.java</file>
         </group>
     </open-files>
 </project-private>

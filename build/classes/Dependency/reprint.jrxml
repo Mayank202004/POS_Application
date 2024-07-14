@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="223" pageHeight="623" whenNoDataType="AllSectionsNoDetail" columnWidth="195" leftMargin="14" rightMargin="14" topMargin="1" bottomMargin="28" uuid="19c75a1a-6aed-4e9a-9dda-1e7b9f74329d">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="15"/>
+	<property name="ireport.y" value="384"/>
 	<parameter name="order_date" class="java.lang.String"/>
 	<parameter name="order_id" class="java.lang.Integer"/>
 	<queryString>
@@ -113,11 +113,11 @@
 					<textElement textAlignment="Center">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["You Save Rs. " + $V{totaldiscount} + " On MRP"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["You Save Rs. " + $F{discounts} + " On MRP"]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="49" y="52" width="100" height="14" uuid="405ae2a3-817b-4d85-a4a1-b1efe4c8e2b9"/>
-					<textFieldExpression><![CDATA[$V{totaldiscount}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{discounts}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="69" y="38" width="100" height="14" uuid="1f722dba-bd29-4873-b7db-362526488195"/>

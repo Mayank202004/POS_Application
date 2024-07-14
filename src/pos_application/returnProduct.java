@@ -19,6 +19,7 @@ public class returnProduct extends javax.swing.JFrame {
 
     public returnProduct() {
         initComponents();
+        setTitle("Return Product"); // Set the window title here
         setDate(); //used to set date and invoice no
 
         
@@ -52,7 +53,7 @@ private void insertOrUpdateRow(DefaultTableModel dt) {
                 v.add(String.valueOf(MRP));
                 v.add(jTextField4.getText());
                 v.add(String.valueOf(MRP - SP));
-                v.add(String.valueOf(MRP * Integer.valueOf(jTextField4.getText())));
+                v.add(String.valueOf(SP * Integer.valueOf(jTextField4.getText())));
                 dt.addRow(v); //Adding row to table
             }
             updateTotal();
@@ -86,8 +87,8 @@ private void updateTotal() {
     // Iterate through all rows and sum the values in the "total" column
     for (int i = 0; i < rowCount; i++) {
         double rowTotal = Double.parseDouble(model.getValueAt(i, 6).toString());
-        double rowDiscount = Double.parseDouble(model.getValueAt(i, 5).toString());
         int rowQuantity = Integer.parseInt(model.getValueAt(i, 4).toString());
+        double rowDiscount = Double.parseDouble(model.getValueAt(i, 5).toString())*(rowQuantity);
 
         total += rowTotal;
         totalQuantity += rowQuantity;
@@ -96,7 +97,7 @@ private void updateTotal() {
     }
 
     // Update the JLabel19 with the calculated total
-    jLabel19.setText(String.valueOf(total));
+    jlabel19.setText(String.valueOf(total));
     
     // Update JLabel20 with the total number of items
     jLabel20.setText(String.valueOf(totalItems));
@@ -110,7 +111,7 @@ private void updateTotal() {
 
 //following method used to reset labels (total price etc) to default
 private void resetLabels() {
-    jLabel19.setText("00.00");
+    jlabel19.setText("00.00");
     jLabel20.setText("00");
     jLabel21.setText("00");
     jLabel22.setText("00.00");
@@ -120,8 +121,9 @@ private void resetLabels() {
 
 //save sales to table
 private void saveSales(){
-        double returnAmount=Double.parseDouble(jLabel19.getText()); //to store total amount of order
+        double returnAmount=Double.parseDouble(jlabel19.getText()); //to store total amount of order
         double totaldiscount=Double.parseDouble(jLabel22.getText()); // to store total discount of order
+        double shoppingvalue=returnAmount+totaldiscount;
         int orderID=Integer.parseInt(jTextField9.getText());
         String Date=jTextField10.getText();
         try{
@@ -133,6 +135,7 @@ private void saveSales(){
             for (int i = 0; i < model.getRowCount(); i++) {     
                 String productName = model.getValueAt(i, 0).toString();
                 int quantity = Integer.parseInt(model.getValueAt(i, 4).toString());
+                double sp=Double.parseDouble(model.getValueAt(i,2).toString());
 
                 // Get the quantity in the order_items table
                 ResultSet orderItemsResult = s.executeQuery("SELECT quantity FROM order_items WHERE order_id = " + orderID + " AND order_date = '" + Date + "' AND product_name = '" + productName + "';");
@@ -157,14 +160,15 @@ private void saveSales(){
                 }
                 else {
                     // Update quantity in order_items table
-                    s.executeUpdate("UPDATE order_items SET quantity = quantity - " + quantity + " WHERE order_id = " + orderID + " AND order_date = '" + Date + "' AND product_name = '" + productName + "';");
+                    double total=quantity*sp;
+                    s.executeUpdate("UPDATE order_items SET quantity = quantity - " + quantity + ",total=total - "+total+" WHERE order_id = " + orderID + " AND order_date = '" + Date + "' AND product_name = '" + productName + "';");
                 }
                
                 // Add returned quantity to products table
                 s.executeUpdate("UPDATE products SET Quantity = Quantity + " + quantity + " WHERE ProductName = '" + productName + "';");
     
                 // Calculate returned amount and update total amount in orders table
-                s.executeUpdate("UPDATE orders SET total_amount = total_amount - " + returnAmount + " WHERE order_id = " + orderID + " AND order_date = '" + Date + "';");
+                s.executeUpdate("UPDATE orders SET total_amount = total_amount - " + returnAmount + ",discounts = discounts - "+totaldiscount+",shopping_value = shopping_value - "+shoppingvalue+" WHERE order_id = " + orderID + " AND order_date = '" + Date + "';");
                 Home.setminireport();
             } 
         }
@@ -187,7 +191,7 @@ private void setDate(){
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        customerID_text = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -222,13 +226,12 @@ private void setDate(){
         jLabel13 = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
-        jLabel19 = new javax.swing.JLabel();
+        jlabel19 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jTextField9 = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
         jTextField10 = new javax.swing.JTextField();
-        rSMaterialButtonRectangle1 = new rojerusan.RSMaterialButtonRectangle();
         rSMaterialButtonRectangle2 = new rojerusan.RSMaterialButtonRectangle();
         jButton1 = new javax.swing.JButton();
 
@@ -272,7 +275,7 @@ private void setDate(){
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        customerID_text.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
         jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel17.setText("Enter Order Number and  Bill Date to proceed");
@@ -289,7 +292,7 @@ private void setDate(){
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(customerID_text, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -321,7 +324,7 @@ private void setDate(){
                                 .addGap(9, 9, 9)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .addComponent(customerID_text, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel16)
                                 .addGap(9, 9, 9)
@@ -629,9 +632,9 @@ private void setDate(){
 
         jPanel15.setBackground(new java.awt.Color(204, 204, 204));
 
-        jLabel19.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel19.setText("00.00");
+        jlabel19.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jlabel19.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jlabel19.setText("00.00");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -639,14 +642,14 @@ private void setDate(){
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jlabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
                 .addContainerGap(7, Short.MAX_VALUE)
-                .addComponent(jLabel19)
+                .addComponent(jlabel19)
                 .addContainerGap())
         );
 
@@ -676,8 +679,6 @@ private void setDate(){
 
         jLabel25.setText("Bill Date :");
 
-        rSMaterialButtonRectangle1.setText("Return and Buy Other");
-
         rSMaterialButtonRectangle2.setText("Return");
         rSMaterialButtonRectangle2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -706,14 +707,17 @@ private void setDate(){
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(47, 47, 47)
-                                .addComponent(rSMaterialButtonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76))
-                            .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 117, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -734,15 +738,10 @@ private void setDate(){
                                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(96, 96, 96))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                                .addGap(96, 96, 96))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(188, 188, 188))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -788,10 +787,8 @@ private void setDate(){
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(rSMaterialButtonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(26, 26, 26))))
+                        .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31))))
         );
 
         pack();
@@ -996,7 +993,7 @@ private void setDate(){
             ResultSet res = s.executeQuery("select customer_id,customer_name,total_amount from orders where order_id='" + orderID + "' AND order_date='"+Date+"'");
             if (res.next()) {
                 // Set the values to JLabels
-                jLabel2.setText(res.getString("customer_id"));
+                customerID_text.setText(res.getString("customer_id"));
                 jLabel1.setText(res.getString("customer_name"));
                 jLabel6.setText(res.getString("total_amount"));
     } else {
@@ -1051,6 +1048,7 @@ private void setDate(){
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel customerID_text;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
@@ -1066,8 +1064,6 @@ private void setDate(){
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -1100,7 +1096,7 @@ private void setDate(){
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
-    private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle1;
+    private javax.swing.JLabel jlabel19;
     private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle2;
     // End of variables declaration//GEN-END:variables
 }

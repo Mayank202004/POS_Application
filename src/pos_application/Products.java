@@ -13,6 +13,7 @@ public class Products extends javax.swing.JFrame {
 
     public Products() {
         initComponents();
+        setTitle("Product Manager"); // Set the window title here
         UpdateComboBox();
     }
     //parametrised constructor for access through product list 
@@ -346,7 +347,7 @@ public class Products extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 140, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -573,6 +574,9 @@ public class Products extends javax.swing.JFrame {
         String name = jTextField2.getText();
         String category=(String) jComboBox1.getSelectedItem();
         String Barcode = jTextField3.getText();
+        if (Barcode.trim().isEmpty()) {
+            Barcode = null;
+        }
         int bp = Integer.parseInt(jTextField4.getText());
         int mrp = Integer.parseInt(jTextField5.getText());
         int sp = Integer.parseInt(jTextField6.getText());
@@ -705,7 +709,6 @@ public class Products extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JTextField jTextField1;

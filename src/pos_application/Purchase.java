@@ -21,6 +21,7 @@ public class Purchase extends javax.swing.JFrame {
 
     public Purchase() {
         initComponents();
+        setTitle("Purchase"); // Set the window title here
         setInvoiceNumberAndDate(); //used to set date and invoice no
 
         

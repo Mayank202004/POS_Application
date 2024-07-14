@@ -32,23 +32,24 @@ public class homeImage extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(217, 227, 241));
 
         jLabel2.setFont(new java.awt.Font("Showcard Gothic", 0, 80)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(20, 71, 190));
         jLabel2.setText("JP's Global");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(340, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(303, 303, 303)
                 .addComponent(jLabel2)
-                .addGap(298, 298, 298))
+                .addContainerGap(335, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(256, 256, 256)
+                .addGap(260, 260, 260)
                 .addComponent(jLabel2)
-                .addContainerGap(273, Short.MAX_VALUE))
+                .addContainerGap(269, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

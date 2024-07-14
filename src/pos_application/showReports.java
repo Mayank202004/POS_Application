@@ -35,6 +35,7 @@ public class showReports extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         rSMaterialButtonRectangle1 = new rojerusan.RSMaterialButtonRectangle();
         rSMaterialButtonRectangle2 = new rojerusan.RSMaterialButtonRectangle();
+        rSMaterialButtonRectangle3 = new rojerusan.RSMaterialButtonRectangle();
 
         setBackground(new java.awt.Color(217, 227, 241));
 
@@ -55,20 +56,28 @@ public class showReports extends javax.swing.JPanel {
             }
         });
 
+        rSMaterialButtonRectangle3.setText("Monthly Approxiamte Profit Report");
+        rSMaterialButtonRectangle3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rSMaterialButtonRectangle3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rSMaterialButtonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(409, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(402, 402, 402))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rSMaterialButtonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rSMaterialButtonRectangle3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -79,7 +88,9 @@ public class showReports extends javax.swing.JPanel {
                 .addComponent(rSMaterialButtonRectangle1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(rSMaterialButtonRectangle2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(360, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(rSMaterialButtonRectangle3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(272, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -115,10 +126,27 @@ public class showReports extends javax.swing.JPanel {
     }
     }//GEN-LAST:event_rSMaterialButtonRectangle2ActionPerformed
 
+    private void rSMaterialButtonRectangle3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle3ActionPerformed
+        //Monthly sales report display when clicked
+        try {
+        // Load compiled JasperReports template
+        String reportPath = "src\\Dependency\\monthlyProfit.jasper";
+
+        // Fill the report with data (No need to specify data source or parameters)
+        JasperPrint jasperPrint = JasperFillManager.fillReport(reportPath, null, mycon());
+
+        // Preview the report
+        JasperViewer.viewReport(jasperPrint, false);
+    } catch (JRException e) {
+        System.out.println(e);
+    }
+    }//GEN-LAST:event_rSMaterialButtonRectangle3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle1;
     private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle2;
+    private rojerusan.RSMaterialButtonRectangle rSMaterialButtonRectangle3;
     // End of variables declaration//GEN-END:variables
 }
