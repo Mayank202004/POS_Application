@@ -11,6 +11,7 @@ public class Add_Category extends javax.swing.JFrame {
     private static Products obj;
     public Add_Category(Products obj) {
         initComponents();
+        setTitle("Add CategoryS"); // Set the window title here
         this.obj=obj;
     }
 

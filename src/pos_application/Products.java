@@ -586,9 +586,12 @@ public class Products extends javax.swing.JFrame {
         
         try{
         Statement s = db.mycon().createStatement();
-        s.executeUpdate(" insert into products (ProductName,Category,Barcode,BuyingPrice,MRP,SellingPrice,Quantity,MinQTY) values ('"+name+"','"+category+"','"+Barcode+"','"+bp+"','"+mrp+"','"+sp+"','"+qty+"','"+minqty+"')");
-        JOptionPane.showMessageDialog(null, "Item added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        if(Barcode!=null){
+            s.executeUpdate(" insert into products (ProductName,Category,Barcode,BuyingPrice,MRP,SellingPrice,Quantity,MinQTY) values ('"+name+"','"+category+"','"+Barcode+"','"+bp+"','"+mrp+"','"+sp+"','"+qty+"','"+minqty+"')");
         }
+        else{s.executeUpdate(" insert into products (ProductName,Category,Barcode,BuyingPrice,MRP,SellingPrice,Quantity,MinQTY) values ('"+name+"','"+category+"',NULL,'"+bp+"','"+mrp+"','"+sp+"','"+qty+"','"+minqty+"')");
+        }
+         JOptionPane.showMessageDialog(null, "Item added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);}
         catch(SQLException e){
         System.out.println(e);}
     }//GEN-LAST:event_jButton3ActionPerformed

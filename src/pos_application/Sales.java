@@ -1038,7 +1038,14 @@ public void returnAndBuyOther(String id,Double amt){
         if (!Barcode.isEmpty()) {
         try{
                 Statement s = db.mycon().createStatement();
-                ResultSet res = s.executeQuery("select * from products where Barcode='" + Barcode + "'");  
+                ResultSet res;
+                System.out.println(Barcode.length());
+                if(Barcode.length()!=4){
+                    res = s.executeQuery("select * from products where Barcode='" + Barcode +"'");  
+                }
+                else{
+                    res=s.executeQuery("select * from products where ProductID='"+Integer.valueOf(Barcode)+"' AND Barcode is NULL");
+                }
                 // Check if the result set has any rows
                 if (res.next()) {
                     String productName = res.getString("ProductName");

@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="223" pageHeight="623" whenNoDataType="AllSectionsNoDetail" columnWidth="195" leftMargin="14" rightMargin="14" topMargin="1" bottomMargin="28" uuid="19c75a1a-6aed-4e9a-9dda-1e7b9f74329d">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="223" pageHeight="623" whenNoDataType="AllSectionsNoDetail" columnWidth="195" leftMargin="14" rightMargin="14" topMargin="0" bottomMargin="7" uuid="19c75a1a-6aed-4e9a-9dda-1e7b9f74329d">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="451"/>
+	<property name="ireport.y" value="524"/>
 	<parameter name="date" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT *
-FROM orders o
-INNER JOIN order_items oi ON o.order_id = oi.order_id and o.order_date = oi.order_date
-WHERE o.order_date = $P{date}
-AND o.order_id = (
-    SELECT MAX(order_id) 
-    FROM orders 
-    WHERE order_date = $P{date}
-)]]>
+		<![CDATA[SELECT 
+    o.*,
+    oi.*, 
+    (o.amount_paid - o.total_amount) AS return_amount
+FROM 
+    orders o
+INNER JOIN 
+    order_items oi 
+    ON o.order_id = oi.order_id AND o.order_date = oi.order_date
+WHERE 
+    o.order_date = $P{date}
+    AND o.order_id = (
+        SELECT 
+            MAX(order_id)
+        FROM 
+            orders
+        WHERE 
+            order_date = $P{date}
+    );
+]]>
 	</queryString>
 	<field name="order_id" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -45,6 +56,9 @@ AND o.order_id = (
 	<field name="amount_paid" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="product_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
 	<field name="product_name" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -66,6 +80,7 @@ AND o.order_id = (
 	<field name="total" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
+	<field name="return_amount" class="java.math.BigDecimal"/>
 	<variable name="totalamount" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{total}]]></variableExpression>
 	</variable>
@@ -78,7 +93,7 @@ AND o.order_id = (
 	<variable name="time" class="java.lang.String"/>
 	<group name="endfooter">
 		<groupFooter>
-			<band height="88">
+			<band height="134">
 				<line>
 					<reportElement x="0" y="0" width="195" height="1" uuid="a1e8b8d7-98c4-4cb6-98eb-7ece94f82ffc"/>
 				</line>
@@ -109,27 +124,43 @@ AND o.order_id = (
 				</staticText>
 				<staticText>
 					<reportElement x="0" y="52" width="78" height="14" uuid="27879502-f154-421d-acb3-a6532e5b5e49"/>
-					<text><![CDATA[Discount :]]></text>
+					<text><![CDATA[Return Amount:]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="0" y="70" width="183" height="13" uuid="282e30f8-562b-432d-a17c-ad58f2356d92"/>
+					<reportElement x="0" y="105" width="195" height="16" uuid="282e30f8-562b-432d-a17c-ad58f2356d92"/>
 					<textElement textAlignment="Center">
-						<font isBold="true"/>
+						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["You Save Rs. " + $F{discounts} + " On MRP"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="49" y="52" width="100" height="14" uuid="405ae2a3-817b-4d85-a4a1-b1efe4c8e2b9"/>
-					<textFieldExpression><![CDATA[$F{discounts}]]></textFieldExpression>
+					<reportElement x="73" y="52" width="100" height="14" uuid="405ae2a3-817b-4d85-a4a1-b1efe4c8e2b9"/>
+					<textFieldExpression><![CDATA[$F{return_amount}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="81" y="24" width="100" height="14" uuid="2e13fe0c-0202-4a33-bffb-5cdd2294df24"/>
 					<textFieldExpression><![CDATA[$F{shopping_value}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="69" y="38" width="100" height="14" uuid="87dfad57-0fc5-4b64-81bc-3fd08050143b"/>
+					<reportElement x="67" y="38" width="100" height="14" uuid="87dfad57-0fc5-4b64-81bc-3fd08050143b"/>
 					<textFieldExpression><![CDATA[$F{amount_paid}]]></textFieldExpression>
 				</textField>
+				<textField>
+					<reportElement x="49" y="66" width="100" height="14" uuid="451b6972-40d7-4b10-a210-c3ae3c688449"/>
+					<textFieldExpression><![CDATA[$F{discounts}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="66" width="78" height="14" uuid="965a51ee-eacd-4ee8-888e-df655190476e"/>
+					<text><![CDATA[Discount :]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="83" y="80" width="100" height="14" uuid="1f8570b7-807c-4245-a80e-8098795d0a67"/>
+					<textFieldExpression><![CDATA[$F{payment_method}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="80" width="83" height="14" uuid="ae75affb-5ad6-4b82-aaa7-458d7186d4fa"/>
+					<text><![CDATA[Payment Method:]]></text>
+				</staticText>
 			</band>
 		</groupFooter>
 	</group>

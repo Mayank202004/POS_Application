@@ -25,6 +25,7 @@ public class Home extends javax.swing.JFrame {
     
     public Home() {
         initComponents();
+        setTitle("POS SYSTEM"); // Set the window title here
         listMenu1.setOpaque(false);
         init();
         homeImage();
@@ -149,6 +150,7 @@ public class Home extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         jPanel1 = new jPanelGradient();
         listMenu1 = new Dependency.ListMenu<>();
         jPanel4 = new javax.swing.JPanel();
@@ -254,6 +256,14 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
+        jButton9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton9.setText("Backup");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -268,7 +278,8 @@ public class Home extends javax.swing.JFrame {
                     .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -288,9 +299,11 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
                 .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -646,6 +659,11 @@ public class Home extends javax.swing.JFrame {
         barprint.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        backup bk = new backup();
+        jpload.jPanelLoader(jPanel3,bk);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -674,36 +692,36 @@ public class Home extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
-//    login loginForm = new login();
-//    loginForm.setLocationRelativeTo(null);
-//
-//    // Wait for the login form to be closed before checking login status
-//    loginForm.addWindowListener(new java.awt.event.WindowAdapter() {
-//        @Override
-//        public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-//            // Check the result of login (If successful then open the application)
-//            if (loginForm.isLoginSuccessful) {
-//                /* Create and display the form */
-//                java.awt.EventQueue.invokeLater(new Runnable() {
-//                    public void run() {
-//                        new Home().setVisible(true);
-//                    }
-//                });
-//            } else {
-//                // Close the application if login is not successful
-//                System.exit(0);
-//            }
-//        }
-//    });
+    login loginForm = new login();
+    loginForm.setLocationRelativeTo(null);
+
+    // Wait for the login form to be closed before checking login status
+    loginForm.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+            // Check the result of login (If successful then open the application)
+            if (loginForm.isLoginSuccessful) {
+                /* Create and display the form */
+                java.awt.EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        new Home().setVisible(true);
+                    }
+                });
+            } else {
+                // Close the application if login is not successful
+                System.exit(0);
+            }
+        }
+    });
 //
 //    // Now make the login form visible
-//    loginForm.setVisible(true);
+    loginForm.setVisible(true);
          // remove following when need login 
-         java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Home().setVisible(true);
-            }
-        });
+//         java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new Home().setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -716,6 +734,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private static javax.swing.JLabel jLabel10;
     private static javax.swing.JLabel jLabel11;

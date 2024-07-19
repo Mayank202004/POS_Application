@@ -30,6 +30,7 @@ public class barcodePrint extends javax.swing.JFrame {
      */
     public barcodePrint() {
         initComponents();
+        setTitle("Print Barcode"); // Set the window title here
     }
     
     //function to preview barcode

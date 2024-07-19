@@ -872,7 +872,13 @@ private void setDate(){
         if (!Barcode.isEmpty()) {
         try{
                 Statement s = db.mycon().createStatement();
-                ResultSet res = s.executeQuery("select * from products where Barcode='" + Barcode + "'");  
+                ResultSet res;
+                if(Barcode.length()!=4){
+                    res = s.executeQuery("select * from products where Barcode='" + Barcode +"'");  
+                }
+                else{
+                    res=s.executeQuery("select * from products where Barcode is NULL AND ProductID='"+Integer.valueOf(Barcode)+"'");
+                }
                 // Check if the result set has any rows
                 if (res.next()) {
                     String productName = res.getString("ProductName");
@@ -1009,6 +1015,7 @@ private void setDate(){
 
     private void rSMaterialButtonRectangle2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSMaterialButtonRectangle2ActionPerformed
         saveSales();
+        JOptionPane.showMessageDialog(null, "Product returned successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_rSMaterialButtonRectangle2ActionPerformed
 
     /**

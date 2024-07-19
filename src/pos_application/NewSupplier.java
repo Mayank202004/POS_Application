@@ -11,6 +11,7 @@ public class NewSupplier extends javax.swing.JFrame {
     private static Purchase Purchase; //reference to sales to update text fields of customer
     public NewSupplier(Purchase Purchase) {
         initComponents();
+        setTitle("New Supplier"); // Set the window title here
         this.Purchase=Purchase;
     }
 

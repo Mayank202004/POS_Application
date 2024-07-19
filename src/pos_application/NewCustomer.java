@@ -16,6 +16,7 @@ public class NewCustomer extends javax.swing.JFrame {
     private static Sales Sales; //reference to sales to update text fields of customer
     public NewCustomer(Sales Sales) {
         initComponents();
+        setTitle("New Customer"); // Set the window title here
         this.Sales=Sales;
     }
 
