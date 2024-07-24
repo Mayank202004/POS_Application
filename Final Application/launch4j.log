@@ -1,0 +1,37 @@
+
+
+Version:	3.50
+CmdLine:	C:\Users\mayan\Documents\NetBeansProjects\POS.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\mayan\Documents\NetBeansProjects\.
+Requires JDK:	Yes
+Requires 64-Bit: Yes
+Java min ver:	
+Java max ver:	
+Substitute:	JAVA_HOME = 
+Substitute:	PATH = C:\Python312\Scripts\;C:\Python312\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\MinGW\bin;C:\Program Files\Java\jdk-20\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;c:\users\mayan\appdata\roaming\python\python311\Scripts\;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\mayan\AppData\Local\Microsoft\WindowsApps;C:\Users\mayan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\mayan\AppData\Local\GitHubDesktop\bin;C:\Users\mayan\anaconda3;C:\Users\mayan\anaconda3\Scripts;C:\ProgramData\chocolatey\bin;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\mayan\AppData\Local\Microsoft\WindowsApps;C:\Users\mayan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\mayan\AppData\Local\GitHubDesktop\bin;C:\Program Files\Java\jdk-20\bin
+JRE paths:	;C:\Python312\Scripts\;C:\Python312\;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\MinGW\bin;C:\Program Files\Java\jdk-20\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;c:\users\mayan\appdata\roaming\python\python311\Scripts\;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\mayan\AppData\Local\Microsoft\WindowsApps;C:\Users\mayan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\mayan\AppData\Local\GitHubDesktop\bin;C:\Users\mayan\anaconda3;C:\Users\mayan\anaconda3\Scripts;C:\ProgramData\chocolatey\bin;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\mayan\AppData\Local\Microsoft\WindowsApps;C:\Users\mayan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\mayan\AppData\Local\GitHubDesktop\bin;C:\Program Files\Java\jdk-20\bin
+Check launcher:	C:\Python312\Scripts\bin\javaw.exe (not found)
+Check launcher:	C:\Python312\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Common Files\Oracle\Java\javapath\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\system32\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\Wbem\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\WindowsPowerShell\v1.0\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\OpenSSH\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\system32\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\System32\Wbem\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\System32\WindowsPowerShell\v1.0\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\System32\OpenSSH\bin\javaw.exe (not found)
+Check launcher:	C:\MinGW\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Java\jdk-20\bin\javaw.exe (OK)
+Check javac:	C:\Program Files\Java\jdk-20\bin\javac.exe (OK)
+Version string: 1.020.000_002 / 64-Bit (OK)
+Launcher:	C:\Program Files\Java\jdk-20\bin\javaw.exe
+Launcher args:	-jar "C:\Users\mayan\Documents\NetBeansProjects\POS.exe"
+Args length:	56/32768 chars
+Exit code:	1

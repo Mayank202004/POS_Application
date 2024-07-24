@@ -98,7 +98,7 @@ public class showReports extends javax.swing.JPanel {
         //Daily sales report display when clicked
         try {
         // Load compiled JasperReports template
-        String reportPath = "src\\Dependency\\dailyReport.jasper";
+        String reportPath = getClass().getResource("/Dependency/dailyReport.jasper").getPath();
 
         // Fill the report with data (No need to specify data source or parameters)
         JasperPrint jasperPrint = JasperFillManager.fillReport(reportPath, null, mycon());
@@ -114,7 +114,8 @@ public class showReports extends javax.swing.JPanel {
         //Monthly sales report display when clicked
         try {
         // Load compiled JasperReports template
-        String reportPath = "src\\Dependency\\monthlyReport.jasper";
+        String reportPath = getClass().getResource("/Dependency/monthlyReport.jasper").getPath();
+        
 
         // Fill the report with data (No need to specify data source or parameters)
         JasperPrint jasperPrint = JasperFillManager.fillReport(reportPath, null, mycon());
@@ -130,7 +131,7 @@ public class showReports extends javax.swing.JPanel {
         //Monthly sales report display when clicked
         try {
         // Load compiled JasperReports template
-        String reportPath = "src\\Dependency\\monthlyProfit.jasper";
+        String reportPath = getClass().getResource("/Dependency/monthlyReport.jasper").getPath();
 
         // Fill the report with data (No need to specify data source or parameters)
         JasperPrint jasperPrint = JasperFillManager.fillReport(reportPath, null, mycon());

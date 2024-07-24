@@ -54,7 +54,7 @@ public class Sales_History extends javax.swing.JPanel {
     public void previewPDFReport(String orderDate, int orderId) {
     try {
         // Load compiled JasperReports template
-        String reportPath = "C:\\Users\\mayan\\Documents\\NetBeansProjects\\POS_Application\\src\\Dependency\\reprint.jasper";
+        String reportPath = getClass().getResource("/Dependency/reprint.jasper").getPath();
 
         // Create parameters map
         Map<String, Object> parameters = new HashMap<>();

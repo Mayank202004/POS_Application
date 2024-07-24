@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ca7d04b6-5441-4cbe-aea5-8d40e2aa6ba1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Times New Roman" fontSize="50" isBold="true" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#736343" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<style name="Row" mode="Transparent">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style backcolor="#E6DAC3"/>
+		</conditionalStyle>
+	</style>
+	<queryString>
+		<![CDATA[SELECT
+    ROW_NUMBER() OVER (ORDER BY month_order) AS serial_number,
+    month,
+    SUM(profit) AS total_profit,
+    ROUND((SUM(profit) / SUM(total_sales_value)) * 100, 2) AS profit_percentage
+FROM (
+    SELECT
+        COALESCE(MONTHNAME(STR_TO_DATE(order_items.order_date, '%d/%m/%Y')), '%Y-%m') AS month,
+        MIN(STR_TO_DATE(order_items.order_date, '%d/%m/%Y')) AS month_order,
+        SUM(order_items.quantity * (order_items.sp - products.BuyingPrice)) AS profit,
+        SUM(order_items.total) AS total_sales_value
+    FROM
+        order_items
+    JOIN
+        products ON order_items.product_id = products.ProductID
+    WHERE
+        order_items.order_date IS NOT NULL
+    GROUP BY
+        COALESCE(MONTHNAME(STR_TO_DATE(order_items.order_date, '%d/%m/%Y')), '%Y-%m')
+) AS monthly_profit
+GROUP BY
+    month, month_order
+ORDER BY
+    month_order;
+]]>
+	</queryString>
+	<field name="serial_number" class="java.math.BigInteger"/>
+	<field name="month" class="java.lang.String"/>
+	<field name="total_profit" class="java.math.BigDecimal"/>
+	<field name="profit_percentage" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="165" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="140" y="20" width="342" height="74" uuid="0b5b8c93-3e7a-46f6-b745-beba0083f8f7"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial Black" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[JP's Global]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="75" y="94" width="383" height="27" uuid="7df461f0-f0f6-4138-8e2a-b6b8af20e4b9"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[69 Street , VLT road, Kolhapur, Maharashtra. Phone : 8600112591]]></text>
+			</staticText>
+			<image>
+				<reportElement x="433" y="-115" width="267" height="209" uuid="8e1cedf1-d43c-4e7e-be00-cccab62f3ded"/>
+				<imageExpression><![CDATA["coffee_stain.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="Title" x="18" y="0" width="111" height="121" uuid="e31b1fc9-a6d0-4d39-bbce-21eeebf23618"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Showcard Gothic" size="90" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[JP]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Title" x="1" y="121" width="551" height="36" uuid="f35a8103-1842-4210-b217-b8839504ffea"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial Black" size="24" isBold="true" pdfFontName="Times-Roman"/>
+				</textElement>
+				<text><![CDATA[Monthly Approximate Profit Report]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="47392e80-16fb-47ae-8ac5-72379b57b3e2"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="0" width="101" height="15" forecolor="#736343" uuid="18b71d1c-9ac5-4eb0-9a00-0553ad74a666"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Serial Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="101" y="0" width="134" height="15" forecolor="#736343" uuid="5ade3303-5676-44c6-9fb6-555cce3fadda"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Month ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="235" y="0" width="185" height="15" forecolor="#736343" uuid="58374b46-7c3f-4b92-bcd0-f3a00492ae1e"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Approximate Profit Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="420" y="1" width="132" height="15" forecolor="#736343" uuid="470dae4f-21c4-4661-ad63-4778bb4089f4"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Profit %age]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<frame>
+				<reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="15" uuid="b2be2086-09a1-4b29-bac8-9e98cdc223f0"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" x="0" y="0" width="101" height="15" uuid="f28ff6b1-e5c5-4b14-a49a-6f3df06041b1"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{serial_number}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" x="101" y="0" width="134" height="15" uuid="3ad943c5-11d6-453c-a71f-f1f9e557b223"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{month}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" x="235" y="0" width="185" height="15" uuid="1e40f43d-adfd-4854-a015-2284836ea82c"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA["₹ "+$F{total_profit}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true">
+					<reportElement style="Detail" x="420" y="0" width="132" height="15" uuid="11db0d20-9405-469d-aa22-f4be02015916"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{profit_percentage} +"%"]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="495c4101-f8c1-428e-8d1b-17538629ef96"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="-21" y="1" width="597" height="24" forecolor="#D0B48E" backcolor="#F2EBDF" uuid="9b64c233-5cde-46cb-8a7e-aa62d37075ef"/>
+				<textField evaluationTime="Report">
+					<reportElement style="Column header" x="533" y="0" width="40" height="20" forecolor="#736343" uuid="1aca6466-7d0a-4bc8-96a4-87764c75f2f3"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="Column header" x="453" y="0" width="80" height="20" forecolor="#736343" uuid="9a3fbfc0-6524-430c-8bf5-f67cfa0d838c"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField pattern="EEEEE dd MMMMM yyyy">
+					<reportElement style="Column header" x="22" y="1" width="197" height="20" forecolor="#736343" uuid="fc013702-6a60-481a-a2d6-20ca7e2c47d1"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

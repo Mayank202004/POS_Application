@@ -88,7 +88,7 @@ private void updateTotal() {
 
     // Iterate through all rows and sum the values in the "total" column
     for (int i = 0; i < rowCount; i++) {
-        double rowTotal = Double.parseDouble(model.getValueAt(i, 6).toString());
+        double rowTotal = Double.parseDouble(model.getValueAt(i, 5).toString());
         int rowQuantity = Integer.parseInt(model.getValueAt(i, 4).toString());
 
         total += rowTotal;
